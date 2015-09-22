@@ -1,0 +1,19 @@
+{
+  "name": "react-router-assembly",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tomasz Niezgoda",
+  "license": "ISC",
+  "dependencies": {
+    "history": "^1.9.1",
+    "lodash": "^3.10.1",
+    "q": "^1.4.1",
+    "react": "^0.13.3",
+    "react-router": "^1.0.0-rc1",
+    "serializable-key-set": "^0.1.0"
+  }
+}
