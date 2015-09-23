@@ -13,17 +13,10 @@ function addReactRoute(app, routesElement, serverPropsGenerator, additionalTempl
     let match = Router.match;
     let React = require('react');
     let _ = require('lodash');
+    let wrapInRouteClass = require('./wrapInRouteClass');
 
-    function componentise(Component){
-      return React.createClass({
-        render: function(){
-          return React.createElement(Component, _.assign({}, this.props, this.props.route.initial, {query: this.props.location.search}));
-        }
-      });
-    }
-
-    match({routes: routesElement(componentise), location: location}, function(error, redirectLocation, renderProps){
-      
+    match({routes: routesElement(wrapInRouteClass), location: location}, function(error, redirectLocation, renderProps){
+      console.log(JSON.stringify(renderProps, null, 2));
       if (redirectLocation){
         response.redirect(301, redirectLocation.pathname + redirectLocation.search);
       }else if(error){
@@ -34,13 +27,12 @@ function addReactRoute(app, routesElement, serverPropsGenerator, additionalTempl
         let requestedRouteParts = renderProps.routes.map(function(route){return route.path});
         let SerializableKeySet = require('serializable-key-set');
         let routePropsDownloader = require('./routePropsDownloader');
-        let routeProps = {params: renderProps.params, query: renderProps.location.search};
 
         console.log('getting props on the server for ' + JSON.stringify(requestedRouteParts));
 
         routePropsDownloader(
           serverPropsGenerator.get(requestedRouteParts), 
-          routeProps
+          renderProps
         )
         .then(function(serverPropsForRoute){
           try{
@@ -51,8 +43,8 @@ function addReactRoute(app, routesElement, serverPropsGenerator, additionalTempl
 
             console.log('rendering react components on the server to string');
 
-            renderProps.routes.forEach(function(route){
-              _.assign(route, {initial: serverPropsForRoute}, routeProps);
+            renderProps.routes.forEach(function(routePart, routePartIndex){
+              _.assign(routePart, {serverProps: serverPropsForRoute[routePartIndex]});
             });
 
             reactDOMString = React.renderToString(React.createElement(RoutingContext, renderProps));

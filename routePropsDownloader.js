@@ -1,4 +1,4 @@
-module.exports = function(serverPropsRequest, state){
+module.exports = function(serverPropsRequest, routeInformation){
   var Q = require('q');
   var promise;
 
@@ -7,10 +7,7 @@ module.exports = function(serverPropsRequest, state){
 
     if(typeof serverPropsRequest === 'function'){
       try{
-        promise = Q.fcall(serverPropsRequest, {
-            params: state.params,
-            query: state.query
-          })
+        promise = Q.fcall(serverPropsRequest, routeInformation)
           .then(function(result){
 
             if(typeof result !== 'object'){
@@ -33,7 +30,7 @@ module.exports = function(serverPropsRequest, state){
   }else{
     // do nothing, not all routes need server side initial data
     console.log('provided routeParts don\'t have props');
-    promise = Q.resolve();
+    promise = Q.resolve({});
   }
 
   return promise;

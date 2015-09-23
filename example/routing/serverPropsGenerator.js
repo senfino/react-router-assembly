@@ -1,12 +1,20 @@
-var SerializableKeySet = require('serializable-key-set');
-var grabber = new SerializableKeySet();
+'use strict';
+
+let SerializableKeySet = require('serializable-key-set');
+let grabber = new SerializableKeySet();
 
 module.exports = function(logic){
-  grabber.add(['/', 'apples/:appleType'], function(variance){
+  grabber.add(['/', 'apples/:appleType'], function(route){
     console.log("serverPropsGenerator for ['/', 'apples/:appleType']");
-    return {
-      initialList: ['red apples', 'green apples', 'yellow apples']
-    };
+
+    return [
+      {
+        exampleKey: 'some example value'
+      },
+      {
+        initialList: ['red apples', 'green apples', 'yellow apples']
+      }
+    ];
   });
 
   return grabber;
