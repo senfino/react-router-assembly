@@ -10,7 +10,9 @@ $(function(){
 
   history.listen(function(location, error){
 
+    console.log('error');
     console.log(error);
+    console.log('location');
     console.log(location);
 
     if (error) {
