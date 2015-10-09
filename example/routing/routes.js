@@ -7,7 +7,7 @@ var Route = Router.Route;
 
 // example components
 var NotFound = require('../components/NotFound');
-var App = require('../components/App');
+// var App = require('../components/App');
 var Apples = require('../components/Apples');
 var Index = require('../components/Index');
 
@@ -15,11 +15,12 @@ module.exports = function(wrapInRouteClass){
   return (
     React.createElement(
       Route, 
-      {path: '/', component: wrapInRouteClass(App)},
-      React.createElement(
-        IndexRoute,
-        {component: wrapInRouteClass(Index)}
-      )/*,
+      {path: '/', component: wrapInRouteClass(App)}//,
+      // React.createElement(
+      //   IndexRoute,
+      //   {component: wrapInRouteClass(Index)}
+      // )
+      /*,
       React.createElement(
         Route,
         {path: 'apples/:appleType', component: wrapInRouteClass(Apples)}

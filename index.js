@@ -16,7 +16,8 @@ function addReactRoute(app, routesElement, serverPropsGenerator, additionalTempl
     let wrapInRouteClass = require('./wrapInRouteClass');
 
     match({routes: routesElement(wrapInRouteClass), location: location}, function(error, redirectLocation, renderProps){
-      console.log(JSON.stringify(renderProps, null, 2));
+      // console.log('renderProps:\n' + JSON.stringify(renderProps, null, 2));
+
       if (redirectLocation){
         response.redirect(301, redirectLocation.pathname + redirectLocation.search);
       }else if(error){
