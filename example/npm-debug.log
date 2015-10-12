@@ -1,9 +1,9 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/Users/niezgoda/.nvm/versions/node/v4.0.0/bin/node',
-1 verbose cli   '/Users/niezgoda/.nvm/versions/node/v4.0.0/bin/npm',
+1 verbose cli [ '/Users/niezgoda/.nvm/versions/node/v4.1.0/bin/node',
+1 verbose cli   '/Users/niezgoda/.nvm/versions/node/v4.1.0/bin/npm',
 1 verbose cli   'start' ]
-2 info using npm@2.14.2
-3 info using node@v4.0.0
+2 info using npm@2.14.3
+3 info using node@v4.1.0
 4 verbose run-script [ 'prestart', 'start', 'poststart' ]
 5 info prestart example@0.1.0
 6 info start example@0.1.0
@@ -11,10 +11,10 @@
 8 info example@0.1.0 Failed to exec start script
 9 verbose stack Error: example@0.1.0 start: `./restart.sh`
 9 verbose stack Exit status 1
-9 verbose stack     at EventEmitter.<anonymous> (/Users/niezgoda/.nvm/versions/node/v4.0.0/lib/node_modules/npm/lib/utils/lifecycle.js:214:16)
+9 verbose stack     at EventEmitter.<anonymous> (/Users/niezgoda/.nvm/versions/node/v4.1.0/lib/node_modules/npm/lib/utils/lifecycle.js:214:16)
 9 verbose stack     at emitTwo (events.js:87:13)
 9 verbose stack     at EventEmitter.emit (events.js:172:7)
-9 verbose stack     at ChildProcess.<anonymous> (/Users/niezgoda/.nvm/versions/node/v4.0.0/lib/node_modules/npm/lib/utils/spawn.js:24:14)
+9 verbose stack     at ChildProcess.<anonymous> (/Users/niezgoda/.nvm/versions/node/v4.1.0/lib/node_modules/npm/lib/utils/spawn.js:24:14)
 9 verbose stack     at emitTwo (events.js:87:13)
 9 verbose stack     at ChildProcess.emit (events.js:172:7)
 9 verbose stack     at maybeClose (internal/child_process.js:817:16)
@@ -22,9 +22,9 @@
 10 verbose pkgid example@0.1.0
 11 verbose cwd /htdocs/public-repos/react-router-assembly/example
 12 error Darwin 15.0.0
-13 error argv "/Users/niezgoda/.nvm/versions/node/v4.0.0/bin/node" "/Users/niezgoda/.nvm/versions/node/v4.0.0/bin/npm" "start"
-14 error node v4.0.0
-15 error npm  v2.14.2
+13 error argv "/Users/niezgoda/.nvm/versions/node/v4.1.0/bin/node" "/Users/niezgoda/.nvm/versions/node/v4.1.0/bin/npm" "start"
+14 error node v4.1.0
+15 error npm  v2.14.3
 16 error code ELIFECYCLE
 17 error example@0.1.0 start: `./restart.sh`
 17 error Exit status 1

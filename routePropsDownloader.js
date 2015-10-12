@@ -1,6 +1,16 @@
+/* 
+ * @Author: Tomasz Niezgoda
+ * @Date: 2015-10-11 18:18:22
+ * @Last Modified by: Tomasz Niezgoda
+ * @Last Modified time: 2015-10-11 18:19:05
+ */
+
+'use strict';
+
 module.exports = function(serverPropsRequest, routeInformation){
-  var Q = require('q');
-  var promise;
+  let Q = require('q');
+  let promise;
+  let logger = require('plain-logger')('routePropsDownloader');
 
   // execute all grabbers and collect props
   if(serverPropsRequest !== null){
@@ -16,20 +26,20 @@ module.exports = function(serverPropsRequest, routeInformation){
               return result;
             }
           }, function(error){
-            console.warn(error.message);
+            logger.warn(error.message);
           });
       }catch(error){
-        console.warn(error.message);
+        logger.warn(error.message);
       }
     }else if(typeof serverPropsRequest === 'object'){
       promise = Q.resolve(serverPropsRequest);
     }else{
-      console.error(serverPropsRequest);
+      logger.error(serverPropsRequest);
       throw new Error('route initial data logic must ba a plain object or a function that returns an object');
     }
   }else{
     // do nothing, not all routes need server side initial data
-    console.log('provided routeParts don\'t have props');
+    logger.log('provided routeParts don\'t have props');
     promise = Q.resolve({});
   }
 

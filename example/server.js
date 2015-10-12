@@ -1,5 +1,12 @@
 #!/usr/bin/env node
 
+/* 
+ * @Author: Tomasz Niezgoda
+ * @Date: 2015-10-11 18:18:22
+ * @Last Modified by: Tomasz Niezgoda
+ * @Last Modified time: 2015-10-11 18:19:26
+ */
+
 'use strict';
 
 let express = require('express');

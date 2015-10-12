@@ -1,3 +1,10 @@
+/* 
+ * @Author: Tomasz Niezgoda
+ * @Date: 2015-10-11 18:18:22
+ * @Last Modified by: Tomasz Niezgoda
+ * @Last Modified time: 2015-10-11 21:26:10
+ */
+
 'use strict';
 
 function addReactRoute(app, routesElement, serverPropsGenerator, additionalTemplateProps){
@@ -7,16 +14,15 @@ function addReactRoute(app, routesElement, serverPropsGenerator, additionalTempl
   Static files in particular should be handled before this route.
   */
   app.get('*', function(request, response, next) {
-    let createLocation = require('history/lib/createLocation');
-    let location = createLocation(request.url);
+    let location = request.url;
     let Router = require('react-router');
     let match = Router.match;
     let React = require('react');
     let _ = require('lodash');
-    let wrapInRouteClass = require('./wrapInRouteClass');
+    let logger = require('plain-logger')('react-router-assembly');
 
-    match({routes: routesElement(wrapInRouteClass), location: location}, function(error, redirectLocation, renderProps){
-      // console.log('renderProps:\n' + JSON.stringify(renderProps, null, 2));
+    match({routes: routesElement, location: location}, function(error, redirectLocation, renderProps){
+      logger.log('renderProps:\n' + JSON.stringify(renderProps, null, 2));
 
       if (redirectLocation){
         response.redirect(301, redirectLocation.pathname + redirectLocation.search);
@@ -29,7 +35,7 @@ function addReactRoute(app, routesElement, serverPropsGenerator, additionalTempl
         let SerializableKeySet = require('serializable-key-set');
         let routePropsDownloader = require('./routePropsDownloader');
 
-        console.log('getting props on the server for ' + JSON.stringify(requestedRouteParts));
+        logger.log('getting props on the server for ' + JSON.stringify(requestedRouteParts));
 
         routePropsDownloader(
           serverPropsGenerator.get(requestedRouteParts), 
@@ -41,19 +47,22 @@ function addReactRoute(app, routesElement, serverPropsGenerator, additionalTempl
             let RoutingContext = Router.RoutingContext;
             let React = require('react');
             let reactDOMString;
+            let ReactDOMServer;
 
-            console.log('rendering react components on the server to string');
+            logger.log('rendering react components on the server to string');
 
             renderProps.routes.forEach(function(routePart, routePartIndex){
               _.assign(routePart, {serverProps: serverPropsForRoute[routePartIndex]});
             });
 
-            reactDOMString = React.renderToString(React.createElement(RoutingContext, renderProps));
+            ReactDOMServer = require('react-dom/server');
+            reactDOMString = ReactDOMServer.renderToString(React.createElement(RoutingContext, renderProps));
 
-            console.log('rendering handlebars response with react embedded');
+            logger.log('rendering handlebars response with react embedded');
 
             response.render('react-page.handlebars', _.assign({
               content: reactDOMString,
+              content: '',
               serverProps: JSON.stringify(serverPropsForRoute)
             }, additionalTemplateProps));
           }catch(error){

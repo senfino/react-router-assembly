@@ -1,44 +1,28 @@
-var React = require('react');
-var Router = require('react-router');
-var ContextExampleComponent = require('./ContextExampleComponent');
+/* 
+ * @Author: Tomasz Niezgoda
+ * @Date: 2015-10-11 18:18:22
+ * @Last Modified by: Tomasz Niezgoda
+ * @Last Modified time: 2015-10-11 21:01:32
+ */
+
+'use strict';
+
+let React = require('react');
+let Router = require('react-router');
+let logger = require('plain-logger')('App');
 
 module.exports = React.createClass({
-  // contextTypes: {
-  //   // location: React.PropTypes.object,
-  //   history: React.PropTypes.object
-  // },
-  // childContextTypes: {
-  //      history: React.PropTypes.string.isRequired
-  // },
-  // getChildContext: function(){
-  //   return {
-  //     history: 'dupa'
-  //   }
-  // },
-  contextTypes: {
-    // location: React.PropTypes.object,
-    hhh: React.PropTypes.string
-  },
-  childContextTypes: {
-    ddd: React.PropTypes.string.isRequired
-  },
-  getChildContext: function(){
-    return {
-      ddd: 'DDD'
-    }
-  },
-  render: function(){
-    console.log('App');
-    console.log(this.context);
-    return React.createElement('div', null, React.createElement(ContextExampleComponent));
-    // return React.createElement('div');
-    // return React.createElement(
-    //   'div', 
-    //   null, 
-    //   'App component', 
-    //   React.createElement('div', null, this.props.children),
-    //   React.createElement(ContextExampleComponent)
-    //   // React.createElement(Router.Link, {to: '/'}, 'click me for index')
-    // );
+  render(){
+    logger.log('#render()');
+
+    return React.createElement(
+      'div', 
+      null,
+      React.createElement('h1', null, 'App'),
+      'Links in react-router use context which was changed from owner-based to parent-based that\'s why they\'re used as examples.',
+      React.createElement(Router.Link, {to: '/apples'}, 'click me for nested Apples component'),
+      React.createElement(Router.Link, {to: '/some-non-existent-path'}, 'click me for separate NotFound component'),
+      this.props.children
+    );
   }
 });
