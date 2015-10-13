@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-13 23:44:11
+ * @Last Modified time: 2015-10-13 23:49:15
  */
 
 'use strict';
@@ -10,11 +10,11 @@
 let logger = require('plain-logger')('index');
 let compiledTemplate;
 
-function setupTemplate(){
+function setupTemplate(templatePath){
   let Handlebars = require('handlebars');
 
   let fs = require('fs');
-  let template = fs.readFileSync(__dirname + '/views/react-page.handlebars', {encoding: 'utf8'});
+  let template = fs.readFileSync(templatePath, {encoding: 'utf8'});
 
   compiledTemplate = Handlebars.compile(template);
 
@@ -140,7 +140,6 @@ function addRoutes(customOptions){
             }, additionalTemplateProps);
             
             response.send(options.compiledTemplate(handlebarsProps));
-            // response.render('react-page.handlebars', handlebarsProps);
           }catch(error){
             next(error);
           }
@@ -166,7 +165,8 @@ function addReactRoute(customOptions){
     isomorphicLogicPath: __dirname + '/routing/isomorphicLogic.default.js',
     doneCallback: null,
     clientPropsGeneratorPath: __dirname + '/routing/clientPropsGenerator.default.js',
-    additionalTemplateProps: {}
+    additionalTemplateProps: {},
+    templatePath: __dirname + '/views/react-page.handlebars'
   };
   let _ = require('lodash');
   let options = _.assign({}, defaults, customOptions);
@@ -185,7 +185,7 @@ function addReactRoute(customOptions){
     routesElementPath: options.routesElementPath,
     isomorphicLogicPath: options.isomorphicLogicPath,
     doneCallback: function(){
-      let compiledTemplate = setupTemplate();
+      let compiledTemplate = setupTemplate(options.templatePath);
 
       addRoutes({
         app: options.app,
