@@ -10,6 +10,7 @@
     "browserify": "^11.2.0",
     "express": "^4.13.3",
     "history": "^1.9.1",
+    "jquery": "^2.1.4",
     "lodash": "^3.10.1",
     "plain-logger": "^0.8.0",
     "q": "^1.4.1",

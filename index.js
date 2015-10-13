@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-13 22:45:22
+ * @Last Modified time: 2015-10-13 22:51:58
  */
 
 'use strict';
@@ -18,7 +18,12 @@ function regenerateFrontScript(customOptions){
   };
   let _ = require('lodash');
   let options = _.assign({}, defaults, customOptions);
-  let {clientPropsGeneratorPath, routesElementPath, isomorphicLogicPath, doneCallback} = options;
+
+  let clientPropsGeneratorPath = options.clientPropsGeneratorPath;
+  let routesElementPath = options.routesElementPath;
+  let isomorphicLogicPath = options.isomorphicLogicPath;
+  let doneCallback = options.doneCallback;
+
   let browserify = require('browserify');
   let browserifyInstance = browserify({
     debug: true
@@ -54,7 +59,11 @@ function addRoutes(customOptions){
   };
   let _ = require('lodash');
   let options = _.assign({}, defaults, customOptions);
-  let {app, routesElement, serverPropsGenerator, additionalTemplateProps} = options;
+
+  let app = options.app;
+  let routesElement = options.routesElement;
+  let serverPropsGenerator = options.serverPropsGenerator;
+  let additionalTemplateProps = options.additionalTemplateProps;
 
   /*
   Add front-end files for rendering React pages.
@@ -138,11 +147,11 @@ function addRoutes(customOptions){
 function addReactRoute(customOptions){
   let defaults = {
     app: null,
-    routesElementPath: './routing/routes.default.js',
-    serverPropsGeneratorPath: './routing/serverPropsGenerator.default.js',
-    isomorphicLogicPath: './routing/isomorphicLogic.default.js',
+    routesElementPath: __dirname + '/routing/routes.default.js',
+    serverPropsGeneratorPath: __dirname + '/routing/serverPropsGenerator.default.js',
+    isomorphicLogicPath: __dirname + '/routing/isomorphicLogic.default.js',
     doneCallback: null,
-    clientPropsGeneratorPath: './routing/clientPropsGenerator.default.js',
+    clientPropsGeneratorPath: __dirname + '/routing/clientPropsGenerator.default.js',
     additionalTemplateProps: {}
   };
   let _ = require('lodash');
