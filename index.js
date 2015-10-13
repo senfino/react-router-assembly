@@ -2,12 +2,66 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-13 20:39:31
+ * @Last Modified time: 2015-10-13 22:45:22
  */
 
 'use strict';
 
-function addReactRoute(app, routesElement, serverPropsGenerator, additionalTemplateProps){
+let logger = require('plain-logger')('index');
+
+function regenerateFrontScript(customOptions){
+  let defaults = {
+    clientPropsGeneratorPath: null,
+    routesElementPath: null,
+    isomorphicLogicPath: null,
+    doneCallback: null
+  };
+  let _ = require('lodash');
+  let options = _.assign({}, defaults, customOptions);
+  let {clientPropsGeneratorPath, routesElementPath, isomorphicLogicPath, doneCallback} = options;
+  let browserify = require('browserify');
+  let browserifyInstance = browserify({
+    debug: true
+  });
+  let fs;
+  let output;
+  let browserifyStream;
+
+  logger.log('#regenerateFrontScript()');
+
+  browserifyInstance.require(clientPropsGeneratorPath, {expose: '$$reactRouterClientPropsGenerator'});
+  browserifyInstance.require(routesElementPath, {expose: '$$reactRouterRoutesElement'});
+  browserifyInstance.require(isomorphicLogicPath, {expose: '$$reactRouterIsomorphicLogic'});
+
+  fs = require('fs');
+  output = fs.createWriteStream(__dirname + '/public/main.generated.js');
+
+  browserifyInstance.add(__dirname + '/public/main.source.js');
+
+  browserifyStream = browserifyInstance.bundle().pipe(output);
+  browserifyStream.on('close', doneCallback);
+  // browserifyStream.on('error', function(){
+  //   logger.log('error');
+  // });
+}
+
+function addRoutes(customOptions){
+  let defaults = {
+    app: null,
+    routesElement: null,
+    serverPropsGenerator: null,
+    additionalTemplateProps: null
+  };
+  let _ = require('lodash');
+  let options = _.assign({}, defaults, customOptions);
+  let {app, routesElement, serverPropsGenerator, additionalTemplateProps} = options;
+
+  /*
+  Add front-end files for rendering React pages.
+   */
+  let express = require('express');
+  app.use(express.static(__dirname + '/public'));
+  logger.log('serving static files for react at ' + __dirname + '/public');
   /*
   This should be the last route. It catches everything and tries to render a 
   React page. React will decide whether to display 404 or expected content.
@@ -78,6 +132,44 @@ function addReactRoute(app, routesElement, serverPropsGenerator, additionalTempl
         .done();
       }
     });
+  });
+}
+
+function addReactRoute(customOptions){
+  let defaults = {
+    app: null,
+    routesElementPath: './routing/routes.default.js',
+    serverPropsGeneratorPath: './routing/serverPropsGenerator.default.js',
+    isomorphicLogicPath: './routing/isomorphicLogic.default.js',
+    doneCallback: null,
+    clientPropsGeneratorPath: './routing/clientPropsGenerator.default.js',
+    additionalTemplateProps: {}
+  };
+  let _ = require('lodash');
+  let options = _.assign({}, defaults, customOptions);
+
+  /*
+  Generate front-end code using browserify when the server is launched so all JS 
+  files can be merged into one and the setup of react-router-assembly is simpler.
+  Consider making this non-compulsory in the future.
+   */
+  let routesElement = require(options.routesElementPath);
+  let isomorphicLogic = require(options.isomorphicLogicPath);
+  let serverPropsGenerator = require(options.serverPropsGeneratorPath)(isomorphicLogic);
+  regenerateFrontScript({
+    clientPropsGeneratorPath: options.clientPropsGeneratorPath,
+    routesElementPath: options.routesElementPath,
+    isomorphicLogicPath: options.isomorphicLogicPath,
+    doneCallback: function(){
+      addRoutes({
+        app: options.app,
+        routesElement: routesElement,
+        serverPropsGenerator: serverPropsGenerator,
+        additionalTemplateProps: options.additionalTemplateProps
+      });
+
+      options.doneCallback();
+    }
   });
 };
 
