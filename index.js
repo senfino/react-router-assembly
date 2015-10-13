@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-11 21:26:10
+ * @Last Modified time: 2015-10-13 20:39:31
  */
 
 'use strict';
@@ -62,7 +62,6 @@ function addReactRoute(app, routesElement, serverPropsGenerator, additionalTempl
 
             response.render('react-page.handlebars', _.assign({
               content: reactDOMString,
-              content: '',
               serverProps: JSON.stringify(serverPropsForRoute)
             }, additionalTemplateProps));
           }catch(error){

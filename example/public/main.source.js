@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-11 22:02:30
+ * @Last Modified time: 2015-10-13 20:44:50
  */
 
 'use strict';
@@ -32,16 +32,19 @@ $(function(){
 
         let routePropsDownloader = require('../../routePropsDownloader');
         let requestedRouteParts = renderProps.routes.map(function(route){return route.path});
+        let isomorphicLogic = require('../routing/isomorphicLogic');
+        let clientPropsGenerator = require('../routing/clientPropsGenerator')(isomorphicLogic);
 
         routePropsDownloader(
-          serverPropsGenerator.get(requestedRouteParts), 
+          clientPropsGenerator.get(requestedRouteParts), 
           renderProps
         )
         .then(
           function(clientPropsForRoute){
+            let _ = require('lodash');
 
             renderProps.routes.forEach(function(routePart, routePartIndex){
-              _.assign(routePart, {serverProps: clientPropsForRoute[routePartIndex]});
+              _.assign(routePart, clientPropsForRoute[routePartIndex]);
             });
 
             logger.log('url changed on front-end, rerendering');
@@ -55,12 +58,11 @@ $(function(){
 
             let ReactDOM = require('react-dom');
             let React = require('react');
-            let _ = require('lodash');
 
             ReactDOM.render(
               React.createElement(
                 RoutingContext, 
-                _.assign(renderProps, {history: history})
+                _.assign(renderProps, {history: history})//we have to do stuff that Router.Router normally does for us
               ), 
               document.getElementById('base')
             );
