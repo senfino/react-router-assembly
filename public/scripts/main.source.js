@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-13 22:53:17
+ * @Last Modified time: 2015-10-13 23:37:37
  */
 
 'use strict';
@@ -31,7 +31,7 @@ $(function(){
 
       match({routes: routesElement, location: location}, function(error, redirectLocation, renderProps){
 // routes, clientPropsGenerator
-        let routePropsDownloader = require('../routePropsDownloader');
+        let routePropsDownloader = require('../../routePropsDownloader');
         let requestedRouteParts = renderProps.routes.map(function(route){return route.path});
         let isomorphicLogic = require('$$reactRouterIsomorphicLogic');
         // let clientPropsGenerator = require('../routing/clientPropsGenerator')(isomorphicLogic);

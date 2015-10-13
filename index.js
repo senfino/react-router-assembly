@@ -2,12 +2,24 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-13 22:51:58
+ * @Last Modified time: 2015-10-13 23:44:11
  */
 
 'use strict';
 
 let logger = require('plain-logger')('index');
+let compiledTemplate;
+
+function setupTemplate(){
+  let Handlebars = require('handlebars');
+
+  let fs = require('fs');
+  let template = fs.readFileSync(__dirname + '/views/react-page.handlebars', {encoding: 'utf8'});
+
+  compiledTemplate = Handlebars.compile(template);
+
+  return compiledTemplate;
+}
 
 function regenerateFrontScript(customOptions){
   let defaults = {
@@ -39,15 +51,12 @@ function regenerateFrontScript(customOptions){
   browserifyInstance.require(isomorphicLogicPath, {expose: '$$reactRouterIsomorphicLogic'});
 
   fs = require('fs');
-  output = fs.createWriteStream(__dirname + '/public/main.generated.js');
+  output = fs.createWriteStream(__dirname + '/public/scripts/main.generated.js');
 
-  browserifyInstance.add(__dirname + '/public/main.source.js');
+  browserifyInstance.add(__dirname + '/public/scripts/main.source.js');
 
   browserifyStream = browserifyInstance.bundle().pipe(output);
-  browserifyStream.on('close', doneCallback);
-  // browserifyStream.on('error', function(){
-  //   logger.log('error');
-  // });
+  browserifyStream.on('close', doneCallback);//let errors bubble up, just handle close
 }
 
 function addRoutes(customOptions){
@@ -55,7 +64,8 @@ function addRoutes(customOptions){
     app: null,
     routesElement: null,
     serverPropsGenerator: null,
-    additionalTemplateProps: null
+    additionalTemplateProps: null,
+    compiledTemplate: null
   };
   let _ = require('lodash');
   let options = _.assign({}, defaults, customOptions);
@@ -111,6 +121,7 @@ function addRoutes(customOptions){
             let React = require('react');
             let reactDOMString;
             let ReactDOMServer;
+            let handlebarsProps;
 
             logger.log('rendering react components on the server to string');
 
@@ -123,10 +134,13 @@ function addRoutes(customOptions){
 
             logger.log('rendering handlebars response with react embedded');
 
-            response.render('react-page.handlebars', _.assign({
+            handlebarsProps = _.assign({
               content: reactDOMString,
               serverProps: JSON.stringify(serverPropsForRoute)
-            }, additionalTemplateProps));
+            }, additionalTemplateProps);
+            
+            response.send(options.compiledTemplate(handlebarsProps));
+            // response.render('react-page.handlebars', handlebarsProps);
           }catch(error){
             next(error);
           }
@@ -165,16 +179,20 @@ function addReactRoute(customOptions){
   let routesElement = require(options.routesElementPath);
   let isomorphicLogic = require(options.isomorphicLogicPath);
   let serverPropsGenerator = require(options.serverPropsGeneratorPath)(isomorphicLogic);
+
   regenerateFrontScript({
     clientPropsGeneratorPath: options.clientPropsGeneratorPath,
     routesElementPath: options.routesElementPath,
     isomorphicLogicPath: options.isomorphicLogicPath,
     doneCallback: function(){
+      let compiledTemplate = setupTemplate();
+
       addRoutes({
         app: options.app,
         routesElement: routesElement,
         serverPropsGenerator: serverPropsGenerator,
-        additionalTemplateProps: options.additionalTemplateProps
+        additionalTemplateProps: options.additionalTemplateProps,
+        compiledTemplate: compiledTemplate
       });
 
       options.doneCallback();
