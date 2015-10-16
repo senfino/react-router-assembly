@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-13 23:49:15
+ * @Last Modified time: 2015-10-14 00:01:00
  */
 
 'use strict';
@@ -23,7 +23,7 @@ function setupTemplate(templatePath){
 
 function regenerateFrontScript(customOptions){
   let defaults = {
-    clientPropsGeneratorPath: null,
+    clientPropsPath: null,
     routesElementPath: null,
     isomorphicLogicPath: null,
     doneCallback: null
@@ -31,7 +31,7 @@ function regenerateFrontScript(customOptions){
   let _ = require('lodash');
   let options = _.assign({}, defaults, customOptions);
 
-  let clientPropsGeneratorPath = options.clientPropsGeneratorPath;
+  let clientPropsPath = options.clientPropsPath;
   let routesElementPath = options.routesElementPath;
   let isomorphicLogicPath = options.isomorphicLogicPath;
   let doneCallback = options.doneCallback;
@@ -46,7 +46,7 @@ function regenerateFrontScript(customOptions){
 
   logger.log('#regenerateFrontScript()');
 
-  browserifyInstance.require(clientPropsGeneratorPath, {expose: '$$reactRouterClientPropsGenerator'});
+  browserifyInstance.require(clientPropsPath, {expose: '$$reactRouterClientProps'});
   browserifyInstance.require(routesElementPath, {expose: '$$reactRouterRoutesElement'});
   browserifyInstance.require(isomorphicLogicPath, {expose: '$$reactRouterIsomorphicLogic'});
 
@@ -164,7 +164,7 @@ function addReactRoute(customOptions){
     serverPropsGeneratorPath: __dirname + '/routing/serverPropsGenerator.default.js',
     isomorphicLogicPath: __dirname + '/routing/isomorphicLogic.default.js',
     doneCallback: null,
-    clientPropsGeneratorPath: __dirname + '/routing/clientPropsGenerator.default.js',
+    clientPropsPath: __dirname + '/routing/clientProps.default.js',
     additionalTemplateProps: {},
     templatePath: __dirname + '/views/react-page.handlebars'
   };
@@ -181,7 +181,7 @@ function addReactRoute(customOptions){
   let serverPropsGenerator = require(options.serverPropsGeneratorPath)(isomorphicLogic);
 
   regenerateFrontScript({
-    clientPropsGeneratorPath: options.clientPropsGeneratorPath,
+    clientPropsPath: options.clientPropsPath,
     routesElementPath: options.routesElementPath,
     isomorphicLogicPath: options.isomorphicLogicPath,
     doneCallback: function(){
