@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-14 00:34:12
+ * @Last Modified time: 2015-10-18 23:30:33
  */
 
 'use strict';
@@ -12,13 +12,29 @@ let grabber = new SerializableKeySet();
 let logger = require('plain-logger')('clientPropsGenerator');
 
 module.exports = function(logic){
-  grabber.add(['/', 'apples/:appleType'], function(route){
-    logger.log("clientProps for ['/', 'apples/:appleType']");
+  grabber.add(['/', '*'], function(route){
+    return [
+      {
+        subpage: 'not found'
+      },
+    ];
+  });
+  grabber.add(['/', 'apples'], function(route){
+    return [
+      {
+        subpage: 'apples'
+      },
+    ];
+  });
+  grabber.add(['/', null], function(route){
+    logger.log('serverPropsGenerator for [\'/\', null]');
 
     return [
-      null,
       {
-        initialSelection: 'red'
+        subpage: 'index'
+      },
+      {
+        add: logic.add
       }
     ];
   });

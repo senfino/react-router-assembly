@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-14 00:04:12
+ * @Last Modified time: 2015-10-18 23:14:09
  */
 
 'use strict';
@@ -31,12 +31,36 @@ $(function(){
       match({routes: routesElement, location: location}, function(error, redirectLocation, renderProps){
         let requestedRouteParts = renderProps.routes.map(function(route){return route.path});
         let isomorphicLogic = require('$$reactRouterIsomorphicLogic');
-        let clientProps = require('$$reactRouterClientProps')(isomorphicLogic);
-        let clientPropsForRoute = clientProps.get(requestedRouteParts) || [];
+        let clientPropsSet = require('$$reactRouterClientProps')(isomorphicLogic);
+        let clientPropsLogic = clientPropsSet.get(requestedRouteParts);
         let _ = require('lodash');
+        let clientProps;
+        let serverProps = window.serverProps;
+
+        if(clientPropsLogic){//consider merging this logic with routePropsDownloader
+
+          if(typeof(clientPropsLogic) === 'function'){
+            try{
+              clientProps = clientPropsLogic();
+
+              if(!Array.isArray(clientProps)){
+                throw new Error('client props must be either an array or a function immediately returning an array');
+              }
+            }catch(error){
+              logger.warn(error.message);
+            }
+          }else if(Array.isArray(clientPropsLogic)){
+            clientProps = clientPropsLogic;
+          }else{
+            throw new Error('client props must be either an array or a function immediately returning an array, got ' + typeof(clientPropsLogic));
+          };
+        }else{
+          clientProps = clientProps || [];
+        }
 
         renderProps.routes.forEach(function(routePart, routePartIndex){
-          _.assign(routePart, clientPropsForRoute[routePartIndex]);
+          //merge serverProps too to know on what server-rendered state we are
+          _.assign(routePart, serverProps[routePartIndex], clientProps[routePartIndex]);
         });
 
         logger.log('url changed on front-end, rerendering');

@@ -2,30 +2,15 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-11 18:20:15
+ * @Last Modified time: 2015-10-18 21:33:51
  */
 
 'use strict';
 
-// Put all initiation logic here, it will be reused on the server and client.
+function Logic(){}
 
-function Logic(){
-
-  // var configuration = require('determine-configuration')();
-
-  // if(configuration === null){
-  //   throw new Error('no configuration');
-  // }
-}
-
-Logic.prototype = {
-  // getApiClient: function(){
-  //   return this._APIClientInstance;
-  // }
+Logic.prototype.add = function(a, b){
+  return a + b;
 };
 
-function logicBuilder(){
-  return new Logic();
-};
-
-module.exports = logicBuilder;
+module.exports = new Logic();

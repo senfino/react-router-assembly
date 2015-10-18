@@ -2,25 +2,25 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-11 18:19:05
+ * @Last Modified time: 2015-10-18 22:06:37
  */
 
 'use strict';
 
-module.exports = function(serverPropsRequest, routeInformation){
+module.exports = function(serverPropsRequest){
   let Q = require('q');
   let promise;
   let logger = require('plain-logger')('routePropsDownloader');
 
   // execute all grabbers and collect props
-  if(serverPropsRequest !== null){
+  if(serverPropsRequest){
 
     if(typeof serverPropsRequest === 'function'){
       try{
-        promise = Q.fcall(serverPropsRequest, routeInformation)
+        promise = Q.fcall(serverPropsRequest)
           .then(function(result){
 
-            if(typeof result !== 'object'){
+            if(!Array.isArray(result)){
               throw new Error('initial data must be returned as an object, even if empty');
             }else{
               return result;
@@ -31,16 +31,16 @@ module.exports = function(serverPropsRequest, routeInformation){
       }catch(error){
         logger.warn(error.message);
       }
-    }else if(typeof serverPropsRequest === 'object'){
+    }else if(Array.isArray(serverPropsRequest)){
       promise = Q.resolve(serverPropsRequest);
     }else{
       logger.error(serverPropsRequest);
-      throw new Error('route initial data logic must ba a plain object or a function that returns an object');
+      throw new Error('route initial data logic must ba an array or a function that returns an array');
     }
   }else{
     // do nothing, not all routes need server side initial data
     logger.log('provided routeParts don\'t have props');
-    promise = Q.resolve({});
+    promise = Q.resolve([]);
   }
 
   return promise;
