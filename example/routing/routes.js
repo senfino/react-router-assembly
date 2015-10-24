@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-17 00:16:45
+ * @Last Modified time: 2015-10-24 21:03:58
  */
 
 'use strict';
@@ -27,7 +27,6 @@ module.exports = React.createElement(
   ),
   React.createElement(
     Route,
-    // {path: 'apples', component: propsPreloaderWrapper(2000, Apples, clientPropsGenerator)}
     {path: 'apples', component: Apples}
   ),
   React.createElement(
