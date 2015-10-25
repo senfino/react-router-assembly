@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-25 18:11:25
+ * @Last Modified time: 2015-10-25 21:51:54
  */
 
 'use strict';
@@ -166,7 +166,8 @@ function addReactRoute(customOptions){
   let defaults = {
     app: null,
     doneCallback: null,
-    additionalTemplateProps: {}
+    additionalTemplateProps: {},
+    serverPropsGenerator: null
   };
   let pathsDefaults = {
     routesElementPath: __dirname + '/routing/routes.default.js',
@@ -204,7 +205,14 @@ function addReactRoute(customOptions){
   // Consider making this non-compulsory in the future.
   routesElement = require(options.routesElementPath);
   isomorphicLogic = require(options.isomorphicLogicPath);
-  serverPropsGenerator = require(options.serverPropsGeneratorPath)(isomorphicLogic);
+
+  if(typeof options.serverPropsGenerator === 'function'){
+    serverPropsGenerator = options.serverPropsGenerator(isomorphicLogic);
+  }else if(typeof options.serverPropsGeneratorPath === 'string'){
+    serverPropsGenerator = require(options.serverPropsGeneratorPath)(isomorphicLogic);
+  }else{
+    throw new Error('serverPropsGenerator (function returning serializable-key-set) or serverPropsGeneratorPath (string) need to be specified');
+  }
 
   regenerateFrontScript({
     clientPropsPath: options.clientPropsPath,
