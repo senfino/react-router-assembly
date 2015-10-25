@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-18 21:56:06
+ * @Last Modified time: 2015-10-25 18:11:25
  */
 
 'use strict';
@@ -179,7 +179,7 @@ function addReactRoute(customOptions){
   let fromBase = function(value){
     let path = require('path');
 
-    return path.join(base, value);
+    return path.resolve(base, value);
   };
   let hasPathKey = function(value, key){
     return key in pathsDefaults;
