@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-18 22:06:37
+ * @Last Modified time: 2015-10-25 21:59:20
  */
 
 'use strict';
@@ -19,9 +19,9 @@ module.exports = function(serverPropsRequest){
       try{
         promise = Q.fcall(serverPropsRequest)
           .then(function(result){
-
+            
             if(!Array.isArray(result)){
-              throw new Error('initial data must be returned as an object, even if empty');
+              throw new Error('initial data must be returned as an array, even if empty');
             }else{
               return result;
             }
