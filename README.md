@@ -20,6 +20,7 @@ All paths are relative to run path, not the library path.
 - `doneCallback` - Run after assembly is setup.
 - `routesElementPath` - Path to React Router's route configuration.
 - `serverPropsGeneratorPath` - Path to module gathering data on the server-side for routes. Route handlers can return promises returning a arrays of objects containing props that will be injected into route components or such structures directly.
+- `serverPropsGenerator` - Direct module reference, takes precedence over `serverPropsGeneratorPath`.
 - `clientPropsPath` - Path to module gathering data on the client-side. Only an array of props objects or a function immediately returning such a structure can be returned here unlike with the serverPropsGenerator, as we want the interface to respond to user actions as fast as possible.
 - `isomorphicLogicPath` - Path to module that will be referenced when creating client and server props sets. Can be used to store logic needed on the client and server as serverProps for paths are serialised and will lose any contained functions.
 - `templatePath` and `additionalTemplateProps` - Can be used for rendering React in a custom way. [Handlebars](http://handlebarsjs.com/) templating engine is used.
