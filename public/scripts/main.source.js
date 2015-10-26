@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-18 23:14:09
+ * @Last Modified time: 2015-10-26 03:34:16
  */
 
 'use strict';
@@ -37,6 +37,8 @@ $(function(){
         let clientProps;
         let serverProps = window.serverProps;
 
+        window.serverProps = null;//remove serverProps immediately after initial render.
+
         if(clientPropsLogic){//consider merging this logic with routePropsDownloader
 
           if(typeof(clientPropsLogic) === 'function'){
@@ -60,7 +62,11 @@ $(function(){
 
         renderProps.routes.forEach(function(routePart, routePartIndex){
           //merge serverProps too to know on what server-rendered state we are
-          _.assign(routePart, serverProps[routePartIndex], clientProps[routePartIndex]);
+          if(serverProps){
+            _.assign(routePart, serverProps[routePartIndex], clientProps[routePartIndex]);
+          }else{
+            _.assign(routePart, clientProps[routePartIndex]);
+          }
         });
 
         logger.log('url changed on front-end, rerendering');
