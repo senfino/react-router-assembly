@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-25 21:51:54
+ * @Last Modified time: 2015-10-26 03:04:58
  */
 
 'use strict';
@@ -117,7 +117,7 @@ function addRoutes(customOptions){
 
         logger.log('getting props on the server for ' + JSON.stringify(requestedRouteParts));
 
-        routePropsDownloader(serverPropsGenerator.get(requestedRouteParts))
+        routePropsDownloader(serverPropsGenerator.get(requestedRouteParts), {params: renderProps.params})
         .then(function(serverPropsForRoute){
           try{
             let _ = require('lodash');

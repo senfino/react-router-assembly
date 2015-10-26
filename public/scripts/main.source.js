@@ -41,7 +41,7 @@ $(function(){
 
           if(typeof(clientPropsLogic) === 'function'){
             try{
-              clientProps = clientPropsLogic();
+              clientProps = clientPropsLogic({params: renderProps.params});
 
               if(!Array.isArray(clientProps)){
                 throw new Error('client props must be either an array or a function immediately returning an array');
