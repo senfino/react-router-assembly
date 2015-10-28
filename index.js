@@ -2,13 +2,13 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-26 03:04:58
+ * @Last Modified time: 2015-10-28 21:56:17
  */
 
 'use strict';
 
-let logger = require('plain-logger')('index');
-let compiledTemplate;
+var logger = require('plain-logger')('index');
+var compiledTemplate;
 
 function setupTemplate(templatePath){
   let Handlebars = require('handlebars');
@@ -26,7 +26,8 @@ function regenerateFrontScript(customOptions){
     clientPropsPath: null,
     routesElementPath: null,
     isomorphicLogicPath: null,
-    doneCallback: null
+    doneCallback: null,
+    compressFrontScript: false
   };
   let _ = require('lodash');
   let options = _.assign({}, defaults, customOptions);
@@ -43,6 +44,8 @@ function regenerateFrontScript(customOptions){
   let fs;
   let output;
   let browserifyStream;
+  let exorcist = require('exorcist');
+  let babelify = require("babelify");
 
   logger.log('#regenerateFrontScript()');
 
@@ -55,7 +58,27 @@ function regenerateFrontScript(customOptions){
 
   browserifyInstance.add(__dirname + '/public/scripts/main.source.js');
 
-  browserifyStream = browserifyInstance.bundle().pipe(output);
+  if(options.compressFrontScript){
+    let envify = require('envify/custom');
+
+    browserifyStream = browserifyInstance
+    .transform(babelify)
+    .transform(envify({
+      NODE_ENV: 'production'
+    }))
+    .transform({
+      global: true
+    }, 'uglifyify')
+    .bundle()
+    .pipe(exorcist(__dirname + '/public/scripts/main.generated.js.map'))
+    .pipe(output);
+  }else{
+    browserifyStream = browserifyInstance
+    .bundle()
+    .pipe(exorcist(__dirname + '/public/scripts/main.generated.js.map'))
+    .pipe(output);
+  }
+  
   browserifyStream.on('close', doneCallback);//let errors bubble up, just handle close
 }
 
@@ -167,7 +190,8 @@ function addReactRoute(customOptions){
     app: null,
     doneCallback: null,
     additionalTemplateProps: {},
-    serverPropsGenerator: null
+    serverPropsGenerator: null,
+    compressFrontScript: false
   };
   let pathsDefaults = {
     routesElementPath: __dirname + '/routing/routes.default.js',
@@ -218,6 +242,7 @@ function addReactRoute(customOptions){
     clientPropsPath: options.clientPropsPath,
     routesElementPath: options.routesElementPath,
     isomorphicLogicPath: options.isomorphicLogicPath,
+    compressFrontScript: options.compressFrontScript,
     doneCallback: function(){
       let compiledTemplate = setupTemplate(options.templatePath);
 

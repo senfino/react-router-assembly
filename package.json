@@ -1,23 +1,28 @@
 {
   "name": "react-router-assembly",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "",
   "main": "index.js",
   "scripts": {},
   "author": "Tomasz Niezgoda",
   "license": "ISC",
   "dependencies": {
+    "babelify": "^6.4.0",
     "browserify": "^11.2.0",
+    "envify": "^3.4.0",
+    "exorcist": "^0.4.0",
     "express": "^4.13.3",
     "handlebars": "^4.0.3",
     "history": "^1.9.1",
     "jquery": "^2.1.4",
     "lodash": "^3.10.1",
+    "minifyify": "^7.1.0",
     "plain-logger": "^0.8.0",
     "q": "^1.4.1",
     "react": "0.14.0",
     "react-dom": "^0.14.0",
     "react-router": "^1.0.0-rc3",
-    "serializable-key-set": "^0.1.0"
+    "serializable-key-set": "^0.1.0",
+    "uglifyify": "^3.0.1"
   }
 }

@@ -24,6 +24,7 @@ All paths are relative to run path, not the library path.
 - `clientPropsPath` - Path to module gathering data on the client-side. Only an array of props objects or a function immediately returning such a structure can be returned here unlike with the serverPropsGenerator, as we want the interface to respond to user actions as fast as possible.
 - `isomorphicLogicPath` - Path to module that will be referenced when creating client and server props sets. Can be used to store logic needed on the client and server as serverProps for paths are serialised and will lose any contained functions.
 - `templatePath` and `additionalTemplateProps` - Can be used for rendering React in a custom way. [Handlebars](http://handlebarsjs.com/) templating engine is used.
+- `compressFrontScript` - Remove parts of code intended for development to decrease the size of the front-end script.
 
 ## Notes
 - When run, RRA uses Browserify to generate a single JavaScript file for use on the client-side. This file is attached to the default template used for rendering React pages.

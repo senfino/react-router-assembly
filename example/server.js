@@ -4,7 +4,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-18 18:18:28
+ * @Last Modified time: 2015-10-28 22:00:08
  */
 
 'use strict';
@@ -48,5 +48,6 @@ attachReactRoute({
   routesElementPath: './routing/routes',
   serverPropsGeneratorPath: './routing/serverPropsGenerator',
   isomorphicLogicPath: './routing/isomorphicLogic',
-  clientPropsPath: './routing/clientProps'
+  clientPropsPath: './routing/clientProps',
+  compressFrontScript: process.env.NODE_ENV
 });
