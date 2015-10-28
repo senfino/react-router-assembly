@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-28 21:56:17
+ * @Last Modified time: 2015-10-28 22:30:14
  */
 
 'use strict';
@@ -66,9 +66,9 @@ function regenerateFrontScript(customOptions){
     .transform(envify({
       NODE_ENV: 'production'
     }))
-    .transform({
+    .transform(require('uglifyify'),{
       global: true
-    }, 'uglifyify')
+    })
     .bundle()
     .pipe(exorcist(__dirname + '/public/scripts/main.generated.js.map'))
     .pipe(output);
