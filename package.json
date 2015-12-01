@@ -1,6 +1,6 @@
 {
   "name": "react-router-assembly",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "",
   "main": "index.js",
   "scripts": {},
@@ -24,5 +24,9 @@
     "react-router": "^1.0.0-rc3",
     "serializable-key-set": "^0.1.0",
     "uglifyify": "^3.0.1"
+  },
+  "devDependencies": {
+    "browserify-incremental": "^3.0.1",
+    "mkdirp": "^0.5.1"
   }
 }

@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-28 22:30:14
+ * @Last Modified time: 2015-11-30 22:25:19
  */
 
 'use strict';
@@ -27,7 +27,8 @@ function regenerateFrontScript(customOptions){
     routesElementPath: null,
     isomorphicLogicPath: null,
     doneCallback: null,
-    compressFrontScript: false
+    compressFrontScript: false,
+    publicFilesDirectory: null
   };
   let _ = require('lodash');
   let options = _.assign({}, defaults, customOptions);
@@ -39,22 +40,35 @@ function regenerateFrontScript(customOptions){
 
   let browserify = require('browserify');
   let browserifyInstance = browserify({
-    debug: true
+    debug: true,
+    cache: {}, 
+    packageCache: {}, 
+    fullPaths: true
   });
   let fs;
   let output;
   let browserifyStream;
   let exorcist = require('exorcist');
-  let babelify = require("babelify");
+  let babelify = require('babelify');
+  let browserifyIncremental = require('browserify-incremental');
+  let temporaryFilesDirectory = process.cwd() + '/.react-router-assembly';
+  let mkdirp;
 
   logger.log('#regenerateFrontScript()');
+
+  // create directory
+  mkdirp = require('mkdirp');
+  mkdirp.sync(temporaryFilesDirectory);
+
+  browserifyIncremental(browserifyInstance, {cacheFile: temporaryFilesDirectory + '/browserify-cache'});
 
   browserifyInstance.require(clientPropsPath, {expose: '$$reactRouterClientProps'});
   browserifyInstance.require(routesElementPath, {expose: '$$reactRouterRoutesElement'});
   browserifyInstance.require(isomorphicLogicPath, {expose: '$$reactRouterIsomorphicLogic'});
 
   fs = require('fs');
-  output = fs.createWriteStream(__dirname + '/public/scripts/main.generated.js');
+  mkdirp.sync(options.publicFilesDirectory + '/scripts');
+  output = fs.createWriteStream(options.publicFilesDirectory + '/scripts/main.generated.js');
 
   browserifyInstance.add(__dirname + '/public/scripts/main.source.js');
 
@@ -67,15 +81,15 @@ function regenerateFrontScript(customOptions){
       NODE_ENV: 'production'
     }))
     .transform(require('uglifyify'),{
-      global: true
+      global: true//minify module code too, if React has to be shrunk by removing unused code, this is necessary
     })
     .bundle()
-    .pipe(exorcist(__dirname + '/public/scripts/main.generated.js.map'))
+    .pipe(exorcist(options.publicFilesDirectory + '/scripts/main.generated.js.map'))
     .pipe(output);
   }else{
     browserifyStream = browserifyInstance
     .bundle()
-    .pipe(exorcist(__dirname + '/public/scripts/main.generated.js.map'))
+    .pipe(exorcist(options.publicFilesDirectory + '/scripts/main.generated.js.map'))
     .pipe(output);
   }
   
@@ -88,7 +102,8 @@ function addRoutes(customOptions){
     routesElement: null,
     serverPropsGenerator: null,
     additionalTemplateProps: null,
-    compiledTemplate: null
+    compiledTemplate: null,
+    publicFilesDirectory: null
   };
   let _ = require('lodash');
   let options = _.assign({}, defaults, customOptions);
@@ -102,8 +117,8 @@ function addRoutes(customOptions){
   Add front-end files for rendering React pages.
    */
   let express = require('express');
-  app.use(express.static(__dirname + '/public'));
-  logger.log('serving static files for react at ' + __dirname + '/public');
+  app.use(express.static(options.publicFilesDirectory));
+  logger.log('serving static files for react at ' + options.publicFilesDirectory);
   /*
   This should be the last route. It catches everything and tries to render a 
   React page. React will decide whether to display 404 or expected content.
@@ -215,6 +230,8 @@ function addReactRoute(customOptions){
   let routesElement;
   let isomorphicLogic;
   let serverPropsGenerator;
+  let publicGeneratedFilesDirectory;
+  let mkdirp;
 
   if(_.isUndefined(options.app)){
     throw new Error('app property is required, should refer to express\'s app');
@@ -238,11 +255,14 @@ function addReactRoute(customOptions){
     throw new Error('serverPropsGenerator (function returning serializable-key-set) or serverPropsGeneratorPath (string) need to be specified');
   }
 
+  publicGeneratedFilesDirectory = process.cwd() + '/.react-router-assembly/public-generated';
+
   regenerateFrontScript({
     clientPropsPath: options.clientPropsPath,
     routesElementPath: options.routesElementPath,
     isomorphicLogicPath: options.isomorphicLogicPath,
     compressFrontScript: options.compressFrontScript,
+    publicFilesDirectory: publicGeneratedFilesDirectory,
     doneCallback: function(){
       let compiledTemplate = setupTemplate(options.templatePath);
 
@@ -251,7 +271,8 @@ function addReactRoute(customOptions){
         routesElement: routesElement,
         serverPropsGenerator: serverPropsGenerator,
         additionalTemplateProps: options.additionalTemplateProps,
-        compiledTemplate: compiledTemplate
+        compiledTemplate: compiledTemplate,
+        publicFilesDirectory: publicGeneratedFilesDirectory
       });
 
       options.doneCallback();
