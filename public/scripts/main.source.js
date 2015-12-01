@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-26 03:34:16
+ * @Last Modified time: 2015-11-07 22:46:37
  */
 
 'use strict';
@@ -13,6 +13,7 @@ $(function(){
   let logger = require('plain-logger')('main.source');
   let createBrowserHistory = require('history/lib/createBrowserHistory');
   let history = createBrowserHistory();
+  let lastRenderedPath = null;
 
   history.listen(function(location, error){
     logger.log('error');
@@ -37,7 +38,11 @@ $(function(){
         let clientProps;
         let serverProps = window.serverProps;
 
-        window.serverProps = null;//remove serverProps immediately after initial render.
+        //remove serverProps after initial path changes.
+        if(lastRenderedPath !== null && lastRenderedPath !== requestedRouteParts){
+          lastRenderedPath = requestedRouteParts;
+          window.serverProps = null;
+        }
 
         if(clientPropsLogic){//consider merging this logic with routePropsDownloader
 
