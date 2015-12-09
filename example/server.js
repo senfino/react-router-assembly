@@ -4,7 +4,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-12-09 16:30:24
+ * @Last Modified time: 2015-12-09 17:00:09
  */
 
 'use strict';
@@ -56,7 +56,7 @@ assembly.build({
   clientPropsPath: './routing/clientProps',
   routesElementPath: './routing/routes',
   isomorphicLogicPath: './routing/isomorphicLogic',
-  compressFrontScript: process.env.NODE_ENV,
+  extraCompress: process.env.NODE_ENV,
   mode: assembly.modes.BUILD_AND_WATCH,
   onChange: function(){
     console.log('scripts changed');

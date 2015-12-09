@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-12-09 16:30:19
+ * @Last Modified time: 2015-12-09 16:57:18
  */
 
 'use strict';
@@ -12,7 +12,6 @@ var compiledTemplate;
 
 var modes = {
   BUILD_AND_WATCH: 'BUILD_AND_WATCH',
-  WATCH: 'WATCH',
   BUILD: 'BUILD'
 };
 
@@ -62,8 +61,7 @@ function regenerateFrontScript(customOptions){
   let mkdirp;
 
   switch(options.mode){
-    case mode.BUILD_AND_WATCH:
-    case mode.WATCH:
+    case modes.BUILD_AND_WATCH:
       watchify = require('watchify');
       browserifyInstance = browserify({
         debug: true,
@@ -72,11 +70,13 @@ function regenerateFrontScript(customOptions){
         plugin: [watchify]
       });
       break;
-    case mode.BUILD:
+    case modes.BUILD:
       browserifyInstance = browserify({
         debug: true
       });
       break;
+    default:
+      throw new Error('mode not supported (' + options.mode + ')');
   }
 
   // create directory
@@ -113,7 +113,7 @@ function regenerateFrontScript(customOptions){
     stream.on('close', options.onUpdate);//let errors bubble up, just handle close
   };
 
-  if(options.compressFrontScript){
+  if(options.extraCompress){
     let envify = require('envify/custom');
 
     browserifyInstance
@@ -243,8 +243,8 @@ function build(customOptions){
   let defaults = {
     extraCompress: false,
     publicGeneratedFilesDirectory: base + '/.react-router-assembly',
-    onUpdate: null//use default from regenerateFrontScript,
-    onChange: null//use default from regenerateFrontScript,
+    onUpdate: null,//use default from regenerateFrontScript,
+    onChange: null,//use default from regenerateFrontScript,
     mode: null//use default from regenerateFrontScript
   };
   let pathsDefaults = {
@@ -335,7 +335,7 @@ function attach(customOptions){
 }
 
 module.exports = {
-  build: build
+  build: build,
   attach: attach,
   modes: modes
 };
