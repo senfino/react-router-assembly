@@ -23,9 +23,7 @@
     "react-dom": "^0.14.0",
     "react-router": "^1.0.0-rc3",
     "serializable-key-set": "^0.1.0",
-    "uglifyify": "^3.0.1"
-  },
-  "devDependencies": {
+    "uglifyify": "^3.0.1",
     "mkdirp": "^0.5.1",
     "watchify": "^3.6.1"
   }
