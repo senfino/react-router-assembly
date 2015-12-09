@@ -4,7 +4,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-28 22:00:08
+ * @Last Modified time: 2015-12-09 16:30:24
  */
 
 'use strict';
@@ -12,9 +12,16 @@
 let express = require('express');
 let app = express();
 let exphbs;
-let attachReactRoute;
+let assembly;
 
 function setupRest(){
+  app.set('views', __dirname + '/views');
+  exphbs  = require('express-handlebars');
+  app.engine('handlebars', exphbs());
+  app.set('view engine', 'handlebars');
+
+  app.use(express.static('public'));
+
   // this route is not specific to react but useful
   app.use(function(error, request, response, next) {
     console.error(error.stack);
@@ -32,22 +39,42 @@ function setupRest(){
   });
 }
 
-// views and templates setup
-app.set('views', __dirname + '/views');
-exphbs  = require('express-handlebars');
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
+// attachReactRoute({
+//   app: app,
+//   routesElementPath: './routing/routes',
+//   serverPropsGeneratorPath: './routing/serverPropsGenerator',
+//   isomorphicLogicPath: './routing/isomorphicLogic',
+//   clientPropsPath: './routing/clientProps',
+//   compressFrontScript: process.env.NODE_ENV,
 
-app.use(express.static('public'));
+//   doneCallback: setupRest
+// });
 
-attachReactRoute = require('../index');
+assembly = require('../index');
 
-attachReactRoute({
-  app: app,
-  doneCallback: setupRest,
-  routesElementPath: './routing/routes',
-  serverPropsGeneratorPath: './routing/serverPropsGenerator',
-  isomorphicLogicPath: './routing/isomorphicLogic',
+assembly.build({
   clientPropsPath: './routing/clientProps',
-  compressFrontScript: process.env.NODE_ENV
+  routesElementPath: './routing/routes',
+  isomorphicLogicPath: './routing/isomorphicLogic',
+  compressFrontScript: process.env.NODE_ENV,
+  mode: assembly.modes.BUILD_AND_WATCH,
+  onChange: function(){
+    console.log('scripts changed');
+  },
+  onUpdate: function(attach){
+    console.log('scripts updated');
+  }
 });
+
+// assembly.attach({
+//   // app: options.app,
+//   //       routesElement: routesElement,
+//   //       serverPropsGenerator: serverPropsGenerator,
+//   //       additionalTemplateProps: options.additionalTemplateProps,//not used here but possible
+//   //       compiledTemplate: compiledTemplate,//not used here but possible
+//   //       publicFilesDirectory: publicGeneratedFilesDirectory//not used here but possible
+//   app: app,
+//   routesElementPath: ,
+//   serverPropsGeneratorPath: ,
+//   onComplete: 
+// });

@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-11-30 22:30:28
+ * @Last Modified time: 2015-11-30 22:40:57
  */
 
 'use strict';
