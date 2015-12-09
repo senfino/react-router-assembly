@@ -17,7 +17,8 @@
     "q": "^1.4.1",
     "react": "0.14.0",
     "react-router": "^1.0.0-rc3",
-    "serializable-key-set": "^0.1.0"
+    "serializable-key-set": "^0.1.0",
+    "server-creator": "0.0.1"
   },
   "devDependencies": {
     "browserify": "^11.1.0"
