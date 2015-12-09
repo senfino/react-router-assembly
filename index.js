@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-12-09 16:57:18
+ * @Last Modified time: 2015-12-09 17:08:18
  */
 
 'use strict';
@@ -291,8 +291,7 @@ function attach(customOptions){
     isomorphicLogicPath: __dirname + '/routing/isomorphicLogic.default.js',
     templatePath: __dirname + '/views/react-page.handlebars',
     routesElementPath: __dirname + '/routing/routes.default.js',
-    serverPropsGeneratorPath: __dirname + '/routing/serverPropsGenerator.default.js',
-    templatePath: __dirname + '/views/react-page.handlebars'
+    serverPropsGeneratorPath: __dirname + '/routing/serverPropsGenerator.default.js'
   };
   let isPathOptionKey = function(value, key){
     return key in pathsDefaults;
