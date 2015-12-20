@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-12-09 17:08:18
+ * @Last Modified time: 2015-12-20 20:46:56
  */
 
 'use strict';
@@ -26,6 +26,12 @@ function setupTemplate(templatePath){
   return compiledTemplate;
 }
 
+function undefinedCustomizer(value, other){
+  let _ = require('lodash');
+
+  return _.isUndefined(value) ? other : value;
+}
+
 /**
  * @param  {string} clientPropsPath String to module containing grabber for 
  * getting props. Currently only string allowed, not directly function.
@@ -45,7 +51,7 @@ function regenerateFrontScript(customOptions){
     mode: modes.BUILD
   };
   let _ = require('lodash');
-  let options = _.assign({}, defaults, customOptions);
+  let options = _.assign({}, defaults, customOptions, undefinedCustomizer);
 
   let clientPropsPath = options.clientPropsPath;
   let routesElementPath = options.routesElementPath;
@@ -100,7 +106,8 @@ function regenerateFrontScript(customOptions){
   bundle = function(){
     let stream;
     let output;
-
+    console.log(customOptions);
+    console.log(defaults);
     options.onChange();
 
     output = fs.createWriteStream(options.publicFilesDirectory + '/scripts/main.generated.js');
@@ -142,7 +149,7 @@ function addRoutes(customOptions){
     publicFilesDirectory: null
   };
   let _ = require('lodash');
-  let options = _.assign({}, defaults, customOptions);
+  let options = _.assign({}, defaults, customOptions, undefinedCustomizer);
 
   let app = options.app;
   let routesElement = options.routesElement;
@@ -204,7 +211,7 @@ function addRoutes(customOptions){
             logger.log('rendering react components on the server to string');
 
             renderProps.routes.forEach(function(routePart, routePartIndex){
-              _.assign(routePart, serverPropsForRoute[routePartIndex]);
+              _.assign(routePart, serverPropsForRoute[routePartIndex], undefinedCustomizer);
             });
 
             ReactDOMServer = require('react-dom/server');
@@ -215,7 +222,7 @@ function addRoutes(customOptions){
             handlebarsProps = _.assign({
               content: reactDOMString,
               serverProps: JSON.stringify(serverPropsForRoute)
-            }, additionalTemplateProps);
+            }, additionalTemplateProps, undefinedCustomizer);
             
             response.send(options.compiledTemplate(handlebarsProps));
           }catch(error){
@@ -242,10 +249,10 @@ function build(customOptions){
   };
   let defaults = {
     extraCompress: false,
-    publicGeneratedFilesDirectory: base + '/.react-router-assembly',
-    onUpdate: null,//use default from regenerateFrontScript,
-    onChange: null,//use default from regenerateFrontScript,
-    mode: null//use default from regenerateFrontScript
+    publicGeneratedFilesDirectory: base + '/.react-router-assembly'//,
+    // onUpdate: undefined,//use default from regenerateFrontScript,
+    // onChange: undefined,//use default from regenerateFrontScript,
+    // mode: undefined//use default from regenerateFrontScript
   };
   let pathsDefaults = {
     routesElementPath: __dirname + '/routing/routes.default.js',
@@ -259,7 +266,7 @@ function build(customOptions){
     return path.resolve(base, value);
   };
   let pathsOptions = _.mapValues(_.pick(customOptions, isPathOptionKey), fromBasePath);
-  let options = _.assign({}, defaults, pathsDefaults, customOptions, pathsOptions);
+  let options = _.assign({}, defaults, pathsDefaults, customOptions, pathsOptions, undefinedCustomizer);
 
   regenerateFrontScript({
     clientPropsPath: options.clientPropsPath,
@@ -302,7 +309,7 @@ function attach(customOptions){
     return path.resolve(base, value);
   };
   let pathsOptions = _.mapValues(_.pick(customOptions, isPathOptionKey), fromBasePath);
-  let options = _.assign({}, defaults, pathsDefaults, customOptions, pathsOptions);
+  let options = _.assign({}, defaults, pathsDefaults, customOptions, pathsOptions, undefinedCustomizer);
   let routesElement = require(options.routesElementPath);
 
   if(_.isUndefined(options.app)){
