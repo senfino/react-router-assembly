@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-12-20 20:46:56
+ * @Last Modified time: 2015-12-20 20:58:20
  */
 
 'use strict';
@@ -106,8 +106,7 @@ function regenerateFrontScript(customOptions){
   bundle = function(){
     let stream;
     let output;
-    console.log(customOptions);
-    console.log(defaults);
+    
     options.onChange();
 
     output = fs.createWriteStream(options.publicFilesDirectory + '/scripts/main.generated.js');
