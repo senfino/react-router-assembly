@@ -2,7 +2,7 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-10-11 18:18:22
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-12-20 20:58:20
+ * @Last Modified time: 2015-12-21 14:32:02
  */
 
 'use strict';
@@ -29,7 +29,7 @@ function setupTemplate(templatePath){
 function undefinedCustomizer(value, other){
   let _ = require('lodash');
 
-  return _.isUndefined(value) ? other : value;
+  return _.isUndefined(other) ? value : other;
 }
 
 /**
@@ -46,11 +46,23 @@ function regenerateFrontScript(customOptions){
     isomorphicLogicPath: null,
     onUpdate: function(){},
     onChange: function(){},
+    cwd: './',
     extraCompress: false,
     publicFilesDirectory: null,
     mode: modes.BUILD
   };
   let _ = require('lodash');
+  let path = require('path');
+
+  if(customOptions.cwd !== undefined){
+
+    if(customOptions.publicFilesDirectory !== undefined){
+      customOptions.publicFilesDirectory = path.resolve(customOptions.cwd, customOptions.publicFilesDirectory);
+    }else{
+      customOptions.publicFilesDirectory = path.resolve(customOptions.cwd, defaults.publicFilesDirectory);
+    }
+  }
+
   let options = _.assign({}, defaults, customOptions, undefinedCustomizer);
 
   let clientPropsPath = options.clientPropsPath;
@@ -63,7 +75,7 @@ function regenerateFrontScript(customOptions){
   let fs;
   let exorcist = require('exorcist');
   let babelify = require('babelify');
-  let temporaryFilesDirectory = process.cwd() + '/.react-router-assembly';
+  // let temporaryFilesDirectory = process.cwd() + '/.react-router-assembly';
   let mkdirp;
 
   switch(options.mode){
@@ -73,12 +85,14 @@ function regenerateFrontScript(customOptions){
         debug: true,
         cache: {}, 
         packageCache: {},
+        basedir: options.cwd,
         plugin: [watchify]
       });
       break;
     case modes.BUILD:
       browserifyInstance = browserify({
-        debug: true
+        debug: true,
+        basedir: options.cwd
       });
       break;
     default:
@@ -87,7 +101,7 @@ function regenerateFrontScript(customOptions){
 
   // create directory
   mkdirp = require('mkdirp');
-  mkdirp.sync(temporaryFilesDirectory);
+  // mkdirp.sync(temporaryFilesDirectory);
 
   browserifyInstance.require(clientPropsPath, {expose: '$$reactRouterClientProps'});
   browserifyInstance.require(routesElementPath, {expose: '$$reactRouterRoutesElement'});
@@ -193,7 +207,7 @@ function addRoutes(customOptions){
       }else{
         let requestedRouteParts = renderProps.routes.map(function(route){return route.path});
         let SerializableKeySet = require('serializable-key-set');
-        let routePropsDownloader = require('./routePropsDownloader');
+        let routePropsDownloader = require(__dirname + '/routePropsDownloader');
 
         logger.log('getting props on the server for ' + JSON.stringify(requestedRouteParts));
 
@@ -242,30 +256,38 @@ function addRoutes(customOptions){
 }
 
 function build(customOptions){
-  let base = process.env.PWD;
-  let isPathOptionKey = function(value, key){
-    return key in pathsDefaults;
-  };
+  // let base = process.env.PWD;
+  // let isPathOptionKey = function(value, key){
+  //   return key in pathsDefaults;
+  // };
+  // let path = require('path');
   let defaults = {
     extraCompress: false,
-    publicGeneratedFilesDirectory: base + '/.react-router-assembly'//,
+    // cwd: undefined,//use default from regenerateFrontScript,
     // onUpdate: undefined,//use default from regenerateFrontScript,
     // onChange: undefined,//use default from regenerateFrontScript,
     // mode: undefined//use default from regenerateFrontScript
-  };
-  let pathsDefaults = {
     routesElementPath: __dirname + '/routing/routes.default.js',
     isomorphicLogicPath: __dirname + '/routing/isomorphicLogic.default.js',
-    clientPropsPath: __dirname + '/routing/clientProps.default.js'
+    clientPropsPath: __dirname + '/routing/clientProps.default.js',
+    publicGeneratedFilesDirectory:  '.react-router-assembly'
   };
-  let _ = require('lodash');
-  let fromBasePath = function(value){
-    let path = require('path');
 
-    return path.resolve(base, value);
-  };
-  let pathsOptions = _.mapValues(_.pick(customOptions, isPathOptionKey), fromBasePath);
-  let options = _.assign({}, defaults, pathsDefaults, customOptions, pathsOptions, undefinedCustomizer);
+  // let pathsDefaults = {
+  //   routesElementPath: __dirname + '/routing/routes.default.js',
+  //   isomorphicLogicPath: __dirname + '/routing/isomorphicLogic.default.js',
+  //   clientPropsPath: __dirname + '/routing/clientProps.default.js',
+  //   publicGeneratedFilesDirectory: base + '/.react-router-assembly'
+  // };
+  let _ = require('lodash');
+  // let fromBasePath = function(value){
+  //   let path = require('path');
+
+  //   return path.resolve(base, value);
+  // };
+  // let pathsOptions = _.mapValues(_.pick(customOptions, isPathOptionKey), fromBasePath);
+  // let options = _.assign({}, defaults, pathsDefaults, customOptions, pathsOptions, undefinedCustomizer);
+  let options = _.assign({}, defaults, customOptions, undefinedCustomizer);
 
   regenerateFrontScript({
     clientPropsPath: options.clientPropsPath,
@@ -275,6 +297,7 @@ function build(customOptions){
     publicFilesDirectory: options.publicGeneratedFilesDirectory,
     onUpdate: options.onUpdate,
     onChange: options.onChange,
+    cwd: options.cwd,
     mode: options.mode
   });
 }
@@ -284,48 +307,54 @@ function attach(customOptions){
   let compiledTemplate;
   let isomorphicLogic;
   let serverPropsGenerator;
-  let base = process.env.PWD;
+  // let base = process.env.PWD;
   let _ = require('lodash');
   let defaults = {
     app: null,
+    cwd: './',
     serverPropsGenerator: null,
     additionalTemplateProps: {},
     onComplete: function(){},
-    publicGeneratedFilesDirectory: base + '/.react-router-assembly'
-  };
-  let pathsDefaults = {
+    // publicGeneratedFilesDirectory: base + '/.react-router-assembly'
+    publicGeneratedFilesDirectory: '.react-router-assembly',
     isomorphicLogicPath: __dirname + '/routing/isomorphicLogic.default.js',
     templatePath: __dirname + '/views/react-page.handlebars',
     routesElementPath: __dirname + '/routing/routes.default.js',
     serverPropsGeneratorPath: __dirname + '/routing/serverPropsGenerator.default.js'
   };
-  let isPathOptionKey = function(value, key){
-    return key in pathsDefaults;
-  };
-  let fromBasePath = function(value){
-    let path = require('path');
 
-    return path.resolve(base, value);
-  };
-  let pathsOptions = _.mapValues(_.pick(customOptions, isPathOptionKey), fromBasePath);
-  let options = _.assign({}, defaults, pathsDefaults, customOptions, pathsOptions, undefinedCustomizer);
-  let routesElement = require(options.routesElementPath);
+  // let pathsDefaults = {
+  // };
+  // let isPathOptionKey = function(value, key){
+  //   return key in pathsDefaults;
+  // };
+  // let fromBasePath = function(value){
+  //   let path = require('path');
+
+  //   return path.resolve(base, value);
+  // };
+  // let pathsOptions = _.mapValues(_.pick(customOptions, isPathOptionKey), fromBasePath);
+  // let options = _.assign({}, defaults, pathsDefaults, customOptions, pathsOptions, undefinedCustomizer);
+  let options = _.assign({}, defaults, customOptions, undefinedCustomizer);
+
+  let path = require('path');
+  let routesElement = require(path.resolve(options.cwd, options.routesElementPath));
 
   if(_.isUndefined(options.app)){
     throw new Error('app property is required, should refer to express\'s app');
   }
 
-  isomorphicLogic = require(options.isomorphicLogicPath);
+  isomorphicLogic = require(path.resolve(options.cwd, options.isomorphicLogicPath));
 
   if(typeof options.serverPropsGenerator === 'function'){
     serverPropsGenerator = options.serverPropsGenerator(isomorphicLogic);
   }else if(typeof options.serverPropsGeneratorPath === 'string'){
-    serverPropsGenerator = require(options.serverPropsGeneratorPath)(isomorphicLogic);
+    serverPropsGenerator = require(path.resolve(options.cwd, options.serverPropsGeneratorPath))(isomorphicLogic);
   }else{
     throw new Error('serverPropsGenerator (function returning serializable-key-set) or serverPropsGeneratorPath (string) need to be specified');
   }
 
-  compiledTemplate = setupTemplate(options.templatePath);
+  compiledTemplate = setupTemplate(path.resolve(options.cwd, options.templatePath));
 
   addRoutes({
     app: options.app,
@@ -333,7 +362,7 @@ function attach(customOptions){
     serverPropsGenerator: serverPropsGenerator,
     additionalTemplateProps: options.additionalTemplateProps,
     compiledTemplate: compiledTemplate,
-    publicFilesDirectory: options.publicGeneratedFilesDirectory
+    publicFilesDirectory: path.resolve(options.cwd, options.publicGeneratedFilesDirectory)
   });
 
   options.onComplete();

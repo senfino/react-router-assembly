@@ -2,17 +2,18 @@
  * @Author: Tomasz Niezgoda
  * @Date: 2015-12-09 17:22:36
  * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-12-09 23:18:03
+ * @Last Modified time: 2015-12-21 14:31:37
  */
 'use strict';
 
 let express = require('express');
 let app = express();
-let exphbs;
 let assembly = require('../index');
 let control = require('server-creator');
 
 function setupRest(){
+  let exphbs;
+
   app.set('views', __dirname + '/views');
   exphbs = require('express-handlebars');
   app.engine('handlebars', exphbs());
