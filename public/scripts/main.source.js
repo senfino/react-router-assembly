@@ -7,13 +7,13 @@
 
 'use strict';
 
-let $ = require('jquery');
+var $ = require('jquery');
 
 $(function(){
-  let logger = require('plain-logger')('main.source');
-  let createBrowserHistory = require('history/lib/createBrowserHistory');
-  let history = createBrowserHistory();
-  let lastRenderedPath = null;
+  var logger = require('plain-logger')('main.source');
+  var createBrowserHistory = require('history/lib/createBrowserHistory');
+  var history = createBrowserHistory();
+  var lastRenderedPath = null;
 
   history.listen(function(location, error){
     logger.log('error');
@@ -24,19 +24,19 @@ $(function(){
     if (error) {
       throw error;
     } else {
-      let Router = require('react-router');
-      let match = Router.match;
-      let routesElement = require('$$reactRouterRoutesElement');
-      let RoutingContext = Router.RoutingContext;
+      var Router = require('react-router');
+      var match = Router.match;
+      var routesElement = require('$$reactRouterRoutesElement');
+      var RoutingContext = Router.RoutingContext;
 
       match({routes: routesElement, location: location}, function(error, redirectLocation, renderProps){
-        let requestedRouteParts = renderProps.routes.map(function(route){return route.path});
-        let isomorphicLogic = require('$$reactRouterIsomorphicLogic');
-        let clientPropsSet = require('$$reactRouterClientProps')(isomorphicLogic);
-        let clientPropsLogic = clientPropsSet.get(requestedRouteParts);
-        let _ = require('lodash');
-        let clientProps;
-        let serverProps = window.serverProps;
+        var requestedRouteParts = renderProps.routes.map(function(route){return route.path});
+        var isomorphicLogic = require('$$reactRouterIsomorphicLogic');
+        var clientPropsSet = require('$$reactRouterClientProps')(isomorphicLogic);
+        var clientPropsLogic = clientPropsSet.get(requestedRouteParts);
+        var _ = require('lodash');
+        var clientProps;
+        var serverProps = window.serverProps;
 
         //remove serverProps after initial path changes.
         if(lastRenderedPath !== null && lastRenderedPath !== requestedRouteParts){
@@ -83,8 +83,8 @@ $(function(){
         logger.log('redirectLocation:');
         logger.log(redirectLocation);
 
-        let ReactDOM = require('react-dom');
-        let React = require('react');
+        var ReactDOM = require('react-dom');
+        var React = require('react');
 
         ReactDOM.render(
           React.createElement(
@@ -98,9 +98,9 @@ $(function(){
   });
 
   // without the ability to do stuff before rendering a new path:
-  // let Router = require('react-router');
-  // let ReactDOM = require('react-dom');
-  // let routesElement = require('../routing/routes');
-  // let React = require('react');
+  // var Router = require('react-router');
+  // var ReactDOM = require('react-dom');
+  // var routesElement = require('../routing/routes');
+  // var React = require('react');
   // ReactDOM.render(React.createElement(Router.Router, {history: createBrowserHistory()}, routesElement), document.getElementById('base'));
 });

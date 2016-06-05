@@ -1,6 +1,6 @@
 {
   "name": "react-router-assembly",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "",
   "main": "index.js",
   "scripts": {},
@@ -19,12 +19,12 @@
     "minifyify": "^7.1.0",
     "plain-logger": "^0.8.0",
     "q": "^1.4.1",
-    "react": "^0.14.0",
-    "react-dom": "^0.14.0",
-    "react-router": "^1.0.0-rc3",
     "serializable-key-set": "^0.1.0",
     "uglifyify": "^3.0.1",
     "mkdirp": "^0.5.1",
-    "watchify": "^3.6.1"
+    "watchify": "^3.6.1",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "react-router": "^1.0.0-rc3"
   }
 }
