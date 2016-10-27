@@ -152,6 +152,45 @@ function regenerateFrontScript(customOptions){
   bundle();
 }
 
+function createCookieManager(request, response){
+  let cookiesManager;
+
+  if(typeof request.cookies === 'object'){
+    cookiesManager = {
+      setJson(key, newValue){
+        this.set(key, JSON.stringify(newValue));
+      },
+      getJson(key){
+        let cookieValue = this.get(key);
+
+        if(typeof cookieValue === 'undefined'){
+          return undefined;
+        }else{
+
+          try{
+            return JSON.parse(cookieValue);
+          }catch(error){
+            return undefined;
+          }
+        }
+      },
+      set(key, newValue){
+        response.cookies[key] = newValue;
+      },
+      get(key){
+        return request.cookies[key];
+      },
+      all(){
+        return request.cookies;
+      }
+    };//cookiesManager needs to be created separately for every request, as it need request and response variables to work
+  }else{
+    cookiesManager = null;
+  }
+
+  return cookiesManager;
+}
+
 function addRoutes(customOptions){
   let defaults = {
     app: null,
@@ -208,10 +247,11 @@ function addRoutes(customOptions){
         let requestedRouteParts = renderProps.routes.map(function(route){return route.path});
         let SerializableKeySet = require('serializable-key-set');
         let routePropsDownloader = require(__dirname + '/routePropsDownloader');
+        let cookiesManager = createCookieManager(request, response);
 
         logger.log('getting props on the server for ' + JSON.stringify(requestedRouteParts));
 
-        routePropsDownloader(serverPropsGenerator.get(requestedRouteParts), {params: renderProps.params})
+        routePropsDownloader(serverPropsGenerator.get(requestedRouteParts), {params: renderProps.params, cookiesManager: cookiesManager})
         .then(function(serverPropsForRoute){
           try{
             let _ = require('lodash');
