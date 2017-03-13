@@ -110,4 +110,4 @@ are required for the library to work correctly. To be specific, there has to be 
 
 
 
-Thiks module cannot be used with `npm link` when react is used in parent also. EXPLAIN IN MORE DETAIL.
+This module cannot be used with `npm link` when react is used in parent also.

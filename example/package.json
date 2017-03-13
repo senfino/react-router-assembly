@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node server"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Senfino",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.13.3",
     "express-handlebars": "^2.0.1",
