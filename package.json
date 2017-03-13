@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {},
-  "author": "Tomasz Niezgoda",
-  "license": "ISC",
+  "author": "Senfino",
+  "license": "MIT",
   "dependencies": {
     "babelify": "^6.4.0",
     "browserify": "^11.2.0",
