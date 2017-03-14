@@ -6,6 +6,12 @@ var modes = {
   BUILD: 'BUILD'
 };
 
+var swallowError = function(error) {
+  console.error(error.toString());
+
+  this.emit('end');
+};
+
 function setupTemplate(templatePath){
   let Handlebars = require('handlebars');
 
@@ -124,6 +130,7 @@ function regenerateFrontScript(customOptions){
 
     stream = browserifyInstance
       .bundle()
+      .on('error', swallowError)
       .pipe(exorcist(options.publicFilesDirectory + '/scripts/main.generated.js.map'))
       .pipe(output);
 
