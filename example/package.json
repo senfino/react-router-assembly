@@ -20,9 +20,6 @@
     "serializable-key-set": "^0.1.0",
     "server-creator": "0.0.1"
   },
-  "devDependencies": {
-    "browserify": "^11.1.0"
-  },
   "engines": {
     "node": "7.7",
     "npm": "4.1"
