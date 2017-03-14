@@ -15,7 +15,7 @@
     "jquery": "^2.1.4",
     "plain-logger": "^0.8.0",
     "q": "^1.4.1",
-    "react": "^15.1.0",
+    "react": "^0.14.0",
     "react-router": "^1.0.0-rc3",
     "serializable-key-set": "^0.1.0",
     "server-creator": "0.0.1"
