@@ -111,3 +111,6 @@ are required for the library to work correctly. To be specific, there has to be 
 
 
 This module cannot be used with `npm link` when react is used in parent also.
+
+
+If extraCompress is set to true, JavaScript will be compressed with uglify and "dead" paths removed from code. This is especially effective with React, as it contains a lot of extra debugging code.

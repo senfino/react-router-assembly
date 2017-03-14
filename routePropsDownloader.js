@@ -1,12 +1,3 @@
-/* 
- * @Author: Tomasz Niezgoda
- * @Date: 2015-10-11 18:18:22
- * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-26 03:05:18
- */
-
-'use strict';
-
 module.exports = function(serverPropsRequest, options){
   let Q = require('q');
   let promise;

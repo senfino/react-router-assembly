@@ -1,12 +1,3 @@
-/* 
- * @Author: Tomasz Niezgoda
- * @Date: 2015-10-11 18:18:22
- * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-24 21:03:58
- */
-
-'use strict';
-
 var React = require('react');
 var Router = require('react-router');
 var IndexRoute = Router.IndexRoute;

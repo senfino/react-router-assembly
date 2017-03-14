@@ -1,15 +1,8 @@
-/* 
- * @Author: Tomasz Niezgoda
- * @Date: 2015-12-09 17:22:36
- * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-12-21 14:31:37
- */
-'use strict';
-
 let express = require('express');
 let app = express();
 let assembly = require('../index');
 let control = require('server-creator');
+let paths = require('./sharedPaths');
 
 function setupRest(){
   let exphbs;
@@ -22,6 +15,7 @@ function setupRest(){
   app.use(express.static('public'));
 
   // this route is not specific to react but useful
+  // for handling server errors outside react
   app.use(function(error, request, response, next) {
     console.error(error.stack);
     response.status(500);
@@ -30,7 +24,7 @@ function setupRest(){
     });
   });
 
-  let server = app.listen(3000, function () {
+  let server = app.listen(80, function () {
     let host = server.address().address;
     let port = server.address().port;
 
@@ -40,14 +34,11 @@ function setupRest(){
   });
 }
 
-let routesElementPath = './routing/routes';
-let isomorphicLogicPath = './routing/isomorphicLogic';
-
 assembly.attach({
   app: app,
-  routesElementPath: routesElementPath,
+  routesElementPath: paths.routesElementPath,
   serverPropsGeneratorPath: './routing/serverPropsGenerator',
-  isomorphicLogicPath: isomorphicLogicPath,
+  isomorphicLogicPath: paths.isomorphicLogicPath,
 
   onComplete: setupRest
 });

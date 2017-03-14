@@ -2,7 +2,7 @@
   "name": "example",
   "version": "0.1.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server"
   },
@@ -15,12 +15,16 @@
     "jquery": "^2.1.4",
     "plain-logger": "^0.8.0",
     "q": "^1.4.1",
-    "react": "0.14.0",
+    "react": "^15.1.0",
     "react-router": "^1.0.0-rc3",
     "serializable-key-set": "^0.1.0",
     "server-creator": "0.0.1"
   },
   "devDependencies": {
     "browserify": "^11.1.0"
+  },
+  "engines": {
+    "node": "7.7",
+    "npm": "4.1"
   }
 }

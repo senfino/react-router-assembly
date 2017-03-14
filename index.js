@@ -1,12 +1,3 @@
-/* 
- * @Author: Tomasz Niezgoda
- * @Date: 2015-10-11 18:18:22
- * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-12-21 14:32:02
- */
-
-'use strict';
-
 var logger = require('plain-logger')('index');
 var compiledTemplate;
 
@@ -26,16 +17,22 @@ function setupTemplate(templatePath){
   return compiledTemplate;
 }
 
+
+
+
+
+
 function undefinedCustomizer(value, other){
   let _ = require('lodash');
 
   return _.isUndefined(other) ? value : other;
 }
 
-/**
- * @param  {string} clientPropsPath String to module containing grabber for 
- * getting props. Currently only string allowed, not directly function.
- */
+
+
+
+
+
 function regenerateFrontScript(customOptions){
   logger.log('#regenerateFrontScript()');
 
@@ -142,7 +139,9 @@ function regenerateFrontScript(customOptions){
         NODE_ENV: 'production'
       }))
       .transform(require('uglifyify'),{
-        global: true//minify module code too, if React has to be shrunk by removing unused code, this is necessary
+        //minify module code too, if React has to be shrunk by 
+        // removing unused code, this is necessary
+        global: true
       });
   }
 
@@ -151,6 +150,12 @@ function regenerateFrontScript(customOptions){
 
   bundle();
 }
+
+
+
+
+
+
 
 function createCookieManager(request, response){
   let cookiesManager;
@@ -190,6 +195,12 @@ function createCookieManager(request, response){
 
   return cookiesManager;
 }
+
+
+
+
+
+
 
 function addRoutes(customOptions){
   let defaults = {
@@ -251,6 +262,11 @@ function addRoutes(customOptions){
 
         logger.log('getting props on the server for ' + JSON.stringify(requestedRouteParts));
 
+
+
+
+
+
         routePropsDownloader(serverPropsGenerator.get(requestedRouteParts), {params: renderProps.params, cookiesManager: cookiesManager})
         .then(function(serverPropsForRoute){
           try{
@@ -295,12 +311,15 @@ function addRoutes(customOptions){
   });
 }
 
+
+
+
+
+
+/**
+ * Builds or watches and rebuilds JavaScript for React.
+ */
 function build(customOptions){
-  // let base = process.env.PWD;
-  // let isPathOptionKey = function(value, key){
-  //   return key in pathsDefaults;
-  // };
-  // let path = require('path');
   let defaults = {
     extraCompress: false,
     // cwd: undefined,//use default from regenerateFrontScript,
@@ -313,20 +332,8 @@ function build(customOptions){
     publicGeneratedFilesDirectory:  '.react-router-assembly'
   };
 
-  // let pathsDefaults = {
-  //   routesElementPath: __dirname + '/routing/routes.default.js',
-  //   isomorphicLogicPath: __dirname + '/routing/isomorphicLogic.default.js',
-  //   clientPropsPath: __dirname + '/routing/clientProps.default.js',
-  //   publicGeneratedFilesDirectory: base + '/.react-router-assembly'
-  // };
   let _ = require('lodash');
-  // let fromBasePath = function(value){
-  //   let path = require('path');
-
-  //   return path.resolve(base, value);
-  // };
-  // let pathsOptions = _.mapValues(_.pick(customOptions, isPathOptionKey), fromBasePath);
-  // let options = _.assign({}, defaults, pathsDefaults, customOptions, pathsOptions, undefinedCustomizer);
+  
   let options = _.assign({}, defaults, customOptions, undefinedCustomizer);
 
   regenerateFrontScript({
@@ -342,6 +349,14 @@ function build(customOptions){
   });
 }
 
+
+
+
+
+
+/**
+ * Attaches paths for rendering React to Express.
+ */
 function attach(customOptions){
   let publicGeneratedFilesDirectory;
   let compiledTemplate;

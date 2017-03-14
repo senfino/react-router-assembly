@@ -1,12 +1,3 @@
-/* 
- * @Author: Tomasz Niezgoda
- * @Date: 2015-10-11 18:18:22
- * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-24 21:32:49
- */
-
-'use strict';
-
 let React = require('react');
 let Router = require('react-router');
 let logger = require('plain-logger')('Apples');

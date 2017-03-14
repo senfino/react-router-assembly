@@ -1,12 +1,3 @@
-/* 
- * @Author: Tomasz Niezgoda
- * @Date: 2015-10-11 18:18:22
- * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-12-09 23:19:31
- */
-
-'use strict';
-
 let React = require('react');
 let Router = require('react-router');
 let logger = require('plain-logger')('App');
@@ -40,7 +31,7 @@ module.exports = React.createClass({
       React.createElement('br'),
       React.createElement(Router.Link, {to: '/some-non-existent-path'}, 'click me for separate NotFound component'),
       this.props.children,
-      'subpage prop = ' + this.state.subpage
+      `subpage prop = ${this.state.subpage}, from clientProps (defined only if JavaScript is enabled)`
     );
   }
 });

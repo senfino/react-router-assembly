@@ -1,13 +1,4 @@
-/* 
- * @Author: Tomasz Niezgoda
- * @Date: 2015-10-11 18:18:22
- * @Last Modified by: Tomasz Niezgoda
- * @Last Modified time: 2015-10-18 23:05:23
- */
-
-'use strict';
-
-var React = require('react');
+let React = require('react');
 let logger = require('plain-logger')('Index');
 
 module.exports = React.createClass({
