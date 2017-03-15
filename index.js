@@ -78,8 +78,7 @@ function regenerateFrontScript(customOptions){
   let fs;
   let exorcist = require('exorcist');
   let babelify = require('babelify');
-  // let temporaryFilesDirectory = process.cwd() + '/.react-router-assembly';
-  let mkdirp;
+  let mkdirp = require('mkdirp');
 
   switch(options.mode){
     case modes.BUILD_AND_WATCH:
@@ -89,22 +88,20 @@ function regenerateFrontScript(customOptions){
         cache: {}, 
         packageCache: {},
         basedir: options.cwd,
-        plugin: [watchify]
+        plugin: [watchify],
+        presets: ['es2015', 'react']
       });
       break;
     case modes.BUILD:
       browserifyInstance = browserify({
         debug: true,
-        basedir: options.cwd
+        basedir: options.cwd,
+        presets: ['es2015', 'react']
       });
       break;
     default:
       throw new Error('mode not supported (' + options.mode + ')');
   }
-
-  // create directory
-  mkdirp = require('mkdirp');
-  // mkdirp.sync(temporaryFilesDirectory);
 
   browserifyInstance.require(clientPropsPath, {expose: '$$reactRouterClientProps'});
   browserifyInstance.require(routesElementPath, {expose: '$$reactRouterRoutesElement'});
@@ -141,7 +138,6 @@ function regenerateFrontScript(customOptions){
     let envify = require('envify/custom');
 
     browserifyInstance
-      .transform(babelify)
       .transform(envify({
         NODE_ENV: 'production'
       }))
@@ -377,7 +373,6 @@ function attach(customOptions){
     serverPropsGenerator: null,
     additionalTemplateProps: {},
     onComplete: function(){},
-    // publicGeneratedFilesDirectory: base + '/.react-router-assembly'
     publicGeneratedFilesDirectory: '.react-router-assembly',
     isomorphicLogicPath: __dirname + '/routing/isomorphicLogic.default.js',
     templatePath: __dirname + '/views/react-page.handlebars',
@@ -385,21 +380,15 @@ function attach(customOptions){
     serverPropsGeneratorPath: __dirname + '/routing/serverPropsGenerator.default.js'
   };
 
-  // let pathsDefaults = {
-  // };
-  // let isPathOptionKey = function(value, key){
-  //   return key in pathsDefaults;
-  // };
-  // let fromBasePath = function(value){
-  //   let path = require('path');
-
-  //   return path.resolve(base, value);
-  // };
-  // let pathsOptions = _.mapValues(_.pick(customOptions, isPathOptionKey), fromBasePath);
-  // let options = _.assign({}, defaults, pathsDefaults, customOptions, pathsOptions, undefinedCustomizer);
   let options = _.assign({}, defaults, customOptions, undefinedCustomizer);
 
   let path = require('path');
+
+
+  require('babel-register')({
+    presets: ['es2015', 'react']
+  });
+
   let routesElement = require(path.resolve(options.cwd, options.routesElementPath));
 
   if(_.isUndefined(options.app)){

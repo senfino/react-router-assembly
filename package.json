@@ -11,8 +11,11 @@
     "npm": "4.1"
   },
   "dependencies": {
-    "babelify": "^6.4.0",
-    "browserify": "^11.2.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "babel-register": "^6.24.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.1.0",
     "envify": "^3.4.0",
     "exorcist": "^0.4.0",
     "express": "^4.13.3",
@@ -20,15 +23,14 @@
     "history": "^1.9.1",
     "jquery": "^2.1.4",
     "lodash": "^3.10.1",
-    "minifyify": "^7.1.0",
+    "mkdirp": "^0.5.1",
     "plain-logger": "^0.8.0",
     "q": "^1.4.1",
-    "serializable-key-set": "^0.1.0",
-    "uglifyify": "^3.0.1",
-    "mkdirp": "^0.5.1",
-    "watchify": "^3.6.1",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
-    "react-router": "^1.0.0-rc3"
+    "react-router": "^1.0.0-rc3",
+    "serializable-key-set": "^0.1.0",
+    "uglifyify": "^3.0.1",
+    "watchify": "^3.6.1"
   }
 }
